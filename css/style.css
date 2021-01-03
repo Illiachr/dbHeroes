@@ -1,0 +1,43 @@
+@import url('../css/reset.css');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    line-height: 20px;
+    background: url(../img/body_bg_pattern.png) #fff;
+}
+
+.wrapper {
+    max-width: 1140px;
+    margin: 0 auto;
+    display: grid;
+    grid-column-gap: 15px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+/* TODO Сделать стики хедер */
+.header {
+    height: 200px;
+    background: url(../img/header_bg_pattern.png) #333333;
+    margin-bottom: 10px;
+}
+
+.hero-grid {
+    
+}
+
+.hero-cell {
+    background: #FFFFFF;
+box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.135216);
+border-radius: 8px;
+}
+
+.footer {
+    height: 100px;
+    background: url(../img/header_bg_pattern.png) #333333;
+}
