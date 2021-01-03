@@ -8,23 +8,59 @@
 body {
     font-family: 'Roboto', sans-serif;
     font-size: 16px;
-    line-height: 20px;
+    line-height: 1.5;
     background: url(../img/body_bg_pattern.png) #fff;
 }
 
 .wrapper {
-    max-width: 1140px;
-    margin: 0 auto;
+    max-width: 1180px;
+    margin: 0 auto;   
+    background: #ffffff;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.135216);
+    border-radius: 8px;
+    padding: 10px;
+}
+
+.wrapper-grid {    
     display: grid;
-    grid-column-gap: 15px;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-column-gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr))
 }
 
 /* TODO Сделать стики хедер */
 .header {
     height: 200px;
     background: url(../img/header_bg_pattern.png) #333333;
-    margin-bottom: 10px;
+    margin-bottom: 2rem;
+}
+
+.control-bar {
+    padding: 1rem;
+    background: #ffffff;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.135216);
+    border-radius: 8px;
+    margin-bottom: 2rem;
+}
+
+.control-bar label {
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.control-bar select {
+    display: block;
+    width: 20rem;
+    height: calc(1.5em + .75rem + 2px);
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #495057;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
 }
 
 .hero-grid {
@@ -32,12 +68,27 @@ body {
 }
 
 .hero-cell {
-    background: #FFFFFF;
-box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.135216);
-border-radius: 8px;
+    width: 280px;
+    background: #ffffff;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.135216);
+    border-radius: 8px;
+    margin-bottom: 10px;
+    overflow: hidden;
 }
 
+.hero-logo {
+    width: 280px;
+    height: 400px;
+    object-fit: cover;
+}
+
+.hero-dscr {
+    padding: 6px;
+}
+
+/* TODO Сделать футер всегда внизу */
 .footer {
+    margin-top: 10px;
     height: 100px;
     background: url(../img/header_bg_pattern.png) #333333;
 }
