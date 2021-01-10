@@ -5,39 +5,42 @@ const heroLayout = document.getElementById('hero-layout'),
     dbUrl = './db/dbHeroes.json';
 //let arrOfObj = [];
 
-const gridLayOut = arrOfObj => {
-    arrOfObj.forEach(hero => {
-        heroLayout.insertAdjacentHTML('beforeend', `
-        <div class="hero-cell" data-name=${hero.name.replace(/\s/g, '_')}>
-            <div class="hero-logo">
-                <img src="./db/${hero.photo}" alt=${hero.name} class="hero-logo">
-                <span></span>
-            </div>
-            <div class="hero-dscr">
-                <h2 class="hero-title">
-                    ${hero.name}
-                </h2>
-                <ul>
-                    <li>real name : ${hero.realName ? hero.realName : 'no data'}</li>
-                    <li>gender: ${hero.gender}</li>
-                    <li>citizenship: ${hero.citizenship ? hero.citizenship : 'no data'}</li>
-                    <li>species: ${hero.species ? hero.species : 'no data'}</li>                    
-                    <li>deathDay: ${hero.deathDay ? hero.deathDay : 'no data'}</li>
-                    <li>status: ${hero.status}</li>
-                    <li>actors: ${hero.actors}</li>
-                </ul>
-                <div class="movies">
-                    <h3 class="movies-title">
-                        movies
-                    </h3>
-                    <ul class="hero-movies">                        
-                    </ul>
+const gridLayOut = (arrOfObj, start = 0, num = 6) => {
+    arrOfObj.forEach((hero, i, arr) => {
+        console.log(start);
+        if (i >= start && i < Math.floor(start + arr.length / num)) {
+            heroLayout.insertAdjacentHTML('beforeend', `
+            <div class="hero-cell" data-name=${hero.name.replace(/\s/g, '_')}>
+                <div class="hero-logo">
+                    <img src="./db/${hero.photo}" alt=${hero.name} class="hero-logo">
+                    <span></span>
                 </div>
+                <div class="hero-dscr">
+                    <h2 class="hero-title">
+                        ${hero.name}
+                    </h2>
+                    <ul>
+                        <li>real name : ${hero.realName ? hero.realName : 'no data'}</li>
+                        <li>gender: ${hero.gender}</li>
+                        <li>citizenship: ${hero.citizenship ? hero.citizenship : 'no data'}</li>
+                        <li>species: ${hero.species ? hero.species : 'no data'}</li>                    
+                        <li>deathDay: ${hero.deathDay ? hero.deathDay : 'no data'}</li>
+                        <li>status: ${hero.status}</li>
+                        <li>actors: ${hero.actors}</li>
+                    </ul>
+                    <div class="movies">
+                        <h3 class="movies-title">
+                            movies
+                        </h3>
+                        <ul class="hero-movies">                        
+                        </ul>
+                    </div>
+                </div>
+                <!-- /.hero-dscr -->
             </div>
-            <!-- /.hero-dscr -->
-        </div>
-        <!-- /.hero-cell -->
-        `);
+            <!-- /.hero-cell -->
+            `);
+        }
     });
 };
 
@@ -91,6 +94,7 @@ fetch(dbUrl)
     })
     .then(data => {
         gridLayOut(data);
+        console.log(`Давай еще картинки, на странице сейчас: ${heroLayout.childElementCount}`);
         addMovies(data);
         addOptions(data);
     })
@@ -116,4 +120,25 @@ filterBar.addEventListener('change', e => {
             addOptions(filteredData);
         })
         .catch(err => console.log(err));
+});
+
+window.addEventListener('scroll', () => {
+    const gridCenter = heroLayout.getBoundingClientRect().bottom + 200;
+    //console.log(`${pageYOffset}px`);
+    if (pageYOffset >= gridCenter) {
+        //console.log(`Давай еще картинки, на странице сейчас: ${heroLayout.childElementCount}`);
+        fetch(dbUrl)
+            .then(res => {
+                if (res.status !== 200) { throw new Error(`Network status isn't 200`); }
+                return res.json();
+            })
+            .then(data => {
+                if (heroLayout.childElementCount < data.length) {
+                    gridLayOut(data, heroLayout.childElementCount);
+                }
+                //addMovies(data);
+                //addOptions(data);
+            })
+            .catch(err => console.log(err));
+    }
 });
