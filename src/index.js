@@ -3,16 +3,35 @@
 const heroLayout = document.getElementById('hero-layout'),
     filterBar = document.getElementById('filter-bar'),
     dbUrl = './db/dbHeroes.json';
-//let arrOfObj = [];
+let heroDb = [];
+const options = {
+    root: null,
+    margin: '0px',
+    threshold: 0.25
+};
 
+const cb = (entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting &&
+                entry.target.matches('.hero-logo img')) {
+            const imgUrl = entry.target.dataset.src;
+            if (imgUrl) {
+                entry.target.src = imgUrl;
+                observer.unobserve(entry.target);
+            }
+        }
+    });
+};
+
+const observer = new IntersectionObserver(cb, options);
 const gridLayOut = (arrOfObj, start = 0, num = 6) => {
     arrOfObj.forEach((hero, i, arr) => {
-        console.log(start);
-        if (i >= start && i < Math.floor(start + arr.length / num)) {
-            heroLayout.insertAdjacentHTML('beforeend', `
+        //console.log(start);
+        //if (i >= start && i < Math.floor(start + arr.length / num)) {
+        heroLayout.insertAdjacentHTML('beforeend', `
             <div class="hero-cell" data-name=${hero.name.replace(/\s/g, '_')}>
                 <div class="hero-logo">
-                    <img src="./db/${hero.photo}" alt=${hero.name} class="hero-logo">
+                    <img data-src="./db/${hero.photo}" alt=${hero.name} class="hero-logo">
                     <span></span>
                 </div>
                 <div class="hero-dscr">
@@ -40,7 +59,7 @@ const gridLayOut = (arrOfObj, start = 0, num = 6) => {
             </div>
             <!-- /.hero-cell -->
             `);
-        }
+        //}
     });
 };
 
@@ -93,52 +112,51 @@ fetch(dbUrl)
         return res.json();
     })
     .then(data => {
-        gridLayOut(data);
+        heroDb = data;
+        gridLayOut(heroDb);
         console.log(`Давай еще картинки, на странице сейчас: ${heroLayout.childElementCount}`);
-        addMovies(data);
-        addOptions(data);
+        addMovies(heroDb);
+        addOptions(heroDb);
+        //observer.observe(document.querySelectorAll('.hero-logo img'));
+        document.querySelectorAll('.hero-logo img').forEach(
+            img => observer.observe(img)
+        );
     })
     .catch(err => console.log(err));
 
 filterBar.addEventListener('change', e => {
     const selectedMovie = e.target.value;
     console.log(selectedMovie);
-    fetch(dbUrl)
-        .then(res => {
-            if (res.status !== 200) { throw new Error(`Network status isn't 200`); }
-            return res.json();
-        })
-        .then(data => {
-            const filteredData = data.filter(obj => {
-                if (obj.movies) { return obj.movies.includes(selectedMovie); }
-            });
-            heroLayout.textContent = '';
-            console.log(filteredData);
-            gridLayOut(filteredData);
-            addMovies(filteredData);
-            e.target.textContent = '';
-            addOptions(filteredData);
-        })
-        .catch(err => console.log(err));
-});
-
-window.addEventListener('scroll', () => {
-    const gridCenter = heroLayout.getBoundingClientRect().bottom + 200;
-    //console.log(`${pageYOffset}px`);
-    if (pageYOffset >= gridCenter) {
-        //console.log(`Давай еще картинки, на странице сейчас: ${heroLayout.childElementCount}`);
-        fetch(dbUrl)
-            .then(res => {
-                if (res.status !== 200) { throw new Error(`Network status isn't 200`); }
-                return res.json();
-            })
-            .then(data => {
-                if (heroLayout.childElementCount < data.length) {
-                    gridLayOut(data, heroLayout.childElementCount);
-                }
-                //addMovies(data);
-                //addOptions(data);
-            })
-            .catch(err => console.log(err));
-    }
+    const filteredData = heroDb.filter(obj => {
+        if (obj.movies) { return obj.movies.includes(selectedMovie); }
+    });
+    heroLayout.textContent = '';
+    console.log(filteredData);
+    gridLayOut(filteredData);
+    addMovies(filteredData);
+    e.target.textContent = '';
+    document.querySelectorAll('.hero-logo img').forEach(
+        img => observer.observe(img)
+    );
+    addOptions(heroDb);
+    // fetch(dbUrl)
+    //     .then(res => {
+    //         if (res.status !== 200) { throw new Error(`Network status isn't 200`); }
+    //         return res.json();
+    //     })
+    //     .then(data => {
+    //         const filteredData = data.filter(obj => {
+    //             if (obj.movies) { return obj.movies.includes(selectedMovie); }
+    //         });
+    //         heroLayout.textContent = '';
+    //         console.log(filteredData);
+    //         gridLayOut(filteredData);
+    //         addMovies(filteredData);
+    //         e.target.textContent = '';
+    //         document.querySelectorAll('.hero-logo img').forEach(
+    //             img => observer.observe(img)
+    //         );
+    //         addOptions(data);
+    //     })
+    //     .catch(err => console.log(err));
 });
